@@ -7,8 +7,15 @@ const context = canvas.getContext("2d");
 
 var x = 0;
 var y = 0;
+var vx = 10;
+var vy = 10;
 var w = 150;
 var h = 150;
+
+function evolveWorld() {
+    x += vx;
+    y += vy;
+}
 
 function render() {
     //clear canvas
@@ -19,4 +26,9 @@ function render() {
     context.stroke();
 }
 
-render();
+function tick() {
+    evolveWorld();
+    render();
+}
+
+setInterval(tick, 100);
