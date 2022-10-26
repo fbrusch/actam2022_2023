@@ -11,15 +11,48 @@
             const canvas = document.getElementById("canvas");
             const context = canvas.getContext("2d");
             
+
+            var x = 10;
+            var y = 10;
+            var vx = 2;
+            var vy = 1;
+
+
+            function render() {
+                context.clearRect(0,0,canvas.width, canvas.height);
+                context.fillStyle = "green";
+                context.fillRect(x, y, 150, 100);
+    
+            }
+
+            function evolveWorld() {
+                x += vx;
+                y += vy;
+                
+                if(x + 150 >= canvas.width) {
+                    vx = -vx;
+                }
+                if(x < 0) {
+                    vx = -vx;
+                }
+            }
+
+            function tick() {
+                evolveWorld();
+                render();
+            }
+
+    
+
+
             
-            context.fillStyle = "green";
-            context.fillRect(10, 10, 150, 100);
+            setInterval(tick, 20);
+
             
-            context.beginPath();
-            context.moveTo(0, 0);
-            context.lineTo(300, 150);
-            context.lineTo(100, 250);
-            context.stroke();
+            
+
+
+
 
         </script>
     
