@@ -7,14 +7,14 @@ const context = canvas.getContext("2d");
 
 var x = 0;
 var y = 0;
-var vx = 10;
-var vy = 10;
+var vx = 0.001;
+var vy = 0.001;
 var w = 150;
 var h = 150;
 
-function evolveWorld() {
-    x += vx;
-    y += vy;
+function evolveWorld(dt) {
+    x += vx*dt;
+    y += vy*dt;
 }
 
 function render() {
@@ -26,9 +26,10 @@ function render() {
     context.stroke();
 }
 
-function tick() {
-    evolveWorld();
+function tick(dt) {
+    evolveWorld(dt);
     render();
+    window.requestAnimationFrame(tick);
 }
 
-setInterval(tick, 100);
+tick(0)
