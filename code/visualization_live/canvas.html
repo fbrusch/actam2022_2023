@@ -2,9 +2,27 @@
     <head></head>
     <body>
         <h1>welcome to canvas!</h1>
-        <canvas 
+        <canvas id="canvas"
             height="500px"
             width="600px"
-            style="border: 1px solid black"></canvas>
+            style="border: 1px solid black">
+        </canvas>
+        <script>
+            const canvas = document.getElementById("canvas");
+            const context = canvas.getContext("2d");
+            
+            
+            context.fillStyle = "green";
+            context.fillRect(10, 10, 150, 100);
+            
+            context.beginPath();
+            context.moveTo(0, 0);
+            context.lineTo(300, 150);
+            context.lineTo(100, 250);
+            context.stroke();
+
+        </script>
+    
+    
     </body>
 </html>
