@@ -13,9 +13,10 @@
             
 
             var x = 10;
-            var y = 10;
-            var vx = 2;
-            var vy = 1;
+            var y = 0;
+            var vx = 4;
+            var vy = 0;
+            var dvy = 0.3;
 
 
             function render() {
@@ -35,6 +36,18 @@
                 if(x < 0) {
                     vx = -vx;
                 }
+                vy += dvy;
+                if(y+100 > canvas.height) {
+                    vy = -0.9*vy;
+                    y = canvas.height - 100;
+                } 
+                if(y < 0) {
+                    vy = -vy;
+                }
+
+                vx = vx*(1-0.009);
+                vy = vy*(1-0.009);
+
             }
 
             function tick() {
