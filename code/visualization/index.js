@@ -7,15 +7,24 @@ const context = canvas.getContext("2d");
 
 var x = 0;
 var y = 0;
-var vx = 0.001;
-var vy = 0;//0.001;
+var vx = 0.1;
+var vy = 0.2;
 var w = 150;
 var h = 150;
+var previousTimeStamp;
 
-function evolveWorld(dt) {
-    x += vx*dt;
-    y += vy*dt;
-    if(x+w > canvas.width) {vx = -vx;}
+function evolveWorld(timeStamp) {
+    var deltaTime;
+
+    deltaTime = previousTimeStamp ? timeStamp - previousTimeStamp : 0
+    previousTimeStamp = timeStamp;
+
+    x += vx*deltaTime;
+    y += vy*deltaTime;
+    if(x+w > canvas.width) {vx = -vx; x = canvas.width - w;}
+    if(x < 0) {vx = -vx; x = 0;}
+    if(y+h > canvas.height) {vy = -vy; y = canvas.height - h;}
+    if(y < 0) {vy = -vy; y = 0;}
 }
 
 function render() {
