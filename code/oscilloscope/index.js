@@ -48,6 +48,21 @@ document.onkeydown = function(e) {
     if (e.key == "q") {
         o.type = ["sine","square","trinagle","sawtooth"][Math.floor(Math.random)*4]
     }
+    if (e.key == "n") {
+        playNoise();
+    }
+}
+
+function playNoise() {
+    const bs = c.createBufferSource();
+    const buffer = c.createBuffer(1, c.sampleRate*1, c.sampleRate);
+    bufferData = buffer.getChannelData(0);
+    for(let i=0; i<bufferData.length; i++) {
+        bufferData[i] = Math.random();
+    }
+    bs.buffer = buffer;
+    bs.connect(a);
+    bs.start();
 }
 
 
