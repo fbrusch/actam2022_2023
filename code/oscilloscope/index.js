@@ -1,103 +1,67 @@
 var canvas = document.getElementById("canvas");
 
 /** @type {CanvasRenderingContext2D} */
-var canvas_context = canvas.getContext("2d");
+var context = canvas.getContext("2d");
 
+context.moveTo(0,0);
+context.lineTo(100,100);
+context.stroke();
 
+var c = new AudioContext();
+var o = c.createOscillator();
+var a = c.createAnalyser();
 
-const tone_oscillator = new Tone.Oscillator();
-tone_oscillator.toDestination();
+o.connect(a);
+a.connect(c.destination);
+o.start();
 
-Tone.Master.volume.value = -9; //in decibels
-
-let waveform = new Tone.Waveform();
-tone_oscillator.connect(waveform);
-
-/*OLD CODE
-var audioContext = new AudioContext();
-var oscillator = audioContext.createOscillator();
-var analyzer = audioContext.createAnalyser();
-
-let oscillatorTypes = ["sine","square","triangle","sawtooth"];
-
-
-oscillator.connect(analyzer);
-analyzer.connect(audioContext.destination);
-oscillator.start();
-
-analyzer.fftSize = 2048;
-
-const bufferLenght = analyzer.frequencyBinCount;
-const bufferArray = new Float32Array(bufferLenght);
-OLD CODE*/
-let bufferArray;
+a.fftSize = 2048;
+const bufferLenght = a.frequencyBinCount;
+const array = new Float32Array(bufferLenght);
 
 function draw() {
-
     requestAnimationFrame(draw);
-
-    //analyzer.getFloatTimeDomainData(bufferArray);
-    bufferArray = waveform.getValue(0);
-
-    canvas_context.clearRect(0,0,canvas.width, canvas.height);
-    canvas_context.beginPath();
-    canvas_context.moveTo(0,0);
-
-    for(let i = 0; i < bufferArray.length; i++) {
-        canvas_context.lineTo(i,bufferArray[i]*canvas.height/2 + canvas.height/2);
+    a.getFloatTimeDomainData(array);
+    context.clearRect(0,0,canvas.width, canvas.height);
+    context.beginPath();
+    context.moveTo(0,0);
+    for(let i = 0; i < array.length; i++) {
+        context.lineTo(i,array[i]*canvas.height/2 + canvas.height/2);
+        //context.lineTo(i, Math.random()*100);
     }
-    canvas_context.stroke()
-}
-
-function startSound(){
-    Tone.start();
-    tone_oscillator.start();
+    context.stroke()
 }
 
 document.onclick = () => 
 {
-    //audioContext.resume();
-    startSound();
+    c.resume();
     draw();
 }
 
-/**
- * Returns a random integer between min (inclusive) and max (inclusive).
- * The value is no lower than min (or the next integer greater than min
- * if min isn't an integer) and no greater than max (or the next integer
- * lower than max if max isn't an integer).
- * Using Math.round() will give you a non-uniform distribution!
- */
-function getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
 document.onkeydown = function(e) {
-    if (e.key === "w") {
-        oscillator.frequency.value *= 1.1;
+    if (e.key == "w") {
+        o.frequency.value *= 1.1;
     }
-    if (e.key === "s") {
-        oscillator.frequency.value *= 0.9;
+    if (e.key == "s") {
+        o.frequency.value *= 0.9;
     }
-    if (e.key === "q") {
-        oscillator.type = oscillatorTypes[getRandomInt(0,3)]
+    if (e.key == "q") {
+        o.type = ["sine","square","trinagle","sawtooth"][Math.floor(Math.random)*4]
     }
-    if (e.key === "n") {
+    if (e.key == "n") {
         playNoise();
     }
 }
 
 function playNoise() {
-    const bs = audioContext.createBufferSource();
-    const buffer = audioContext.createBuffer(1, audioContext.sampleRate, audioContext.sampleRate);
+    const bs = c.createBufferSource();
+    const buffer = c.createBuffer(1, c.sampleRate*1, c.sampleRate);
     bufferData = buffer.getChannelData(0);
-    for(let i=0; i< bufferData.length; i++) {
+    for(let i=0; i<bufferData.length; i++) {
         bufferData[i] = Math.random();
     }
     bs.buffer = buffer;
-    bs.connect(analyzer);
+    bs.connect(a);
     bs.start();
 }
 
