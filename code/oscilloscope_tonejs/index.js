@@ -13,30 +13,14 @@ Tone.Master.volume.value = -9; //in decibels
 let waveform = new Tone.Waveform();
 tone_oscillator.connect(waveform);
 
-/*OLD CODE
-var audioContext = new AudioContext();
-var oscillator = audioContext.createOscillator();
-var analyzer = audioContext.createAnalyser();
-
 let oscillatorTypes = ["sine","square","triangle","sawtooth"];
 
-
-oscillator.connect(analyzer);
-analyzer.connect(audioContext.destination);
-oscillator.start();
-
-analyzer.fftSize = 2048;
-
-const bufferLenght = analyzer.frequencyBinCount;
-const bufferArray = new Float32Array(bufferLenght);
-OLD CODE*/
 let bufferArray;
 
 function draw() {
 
     requestAnimationFrame(draw);
 
-    //analyzer.getFloatTimeDomainData(bufferArray);
     bufferArray = waveform.getValue(0);
 
     canvas_context.clearRect(0,0,canvas.width, canvas.height);
@@ -54,9 +38,7 @@ function startSound(){
     tone_oscillator.start();
 }
 
-document.onclick = () => 
-{
-    //audioContext.resume();
+document.onclick = () => {
     startSound();
     draw();
 }
@@ -76,13 +58,13 @@ function getRandomInt(min, max) {
 
 document.onkeydown = function(e) {
     if (e.key === "w") {
-        oscillator.frequency.value *= 1.1;
+        tone_oscillator.frequency.value *= 1.1;
     }
     if (e.key === "s") {
-        oscillator.frequency.value *= 0.9;
+        tone_oscillator.frequency.value *= 0.9;
     }
     if (e.key === "q") {
-        oscillator.type = oscillatorTypes[getRandomInt(0,3)]
+        tone_oscillator.type = oscillatorTypes[getRandomInt(0,3)]
     }
     if (e.key === "n") {
         playNoise();
