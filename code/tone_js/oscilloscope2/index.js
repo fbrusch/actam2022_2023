@@ -1,7 +1,7 @@
 /**  @type {HTMLCanvasElement} */
-var canvas = document.getElementById("canvas");
+const canvas = document.getElementById("canvas");
 
-var canvas_context = canvas.getContext("2d");
+const canvas_context = canvas.getContext("2d");
 
 
 

@@ -27,7 +27,7 @@ for(let i=0;i<bufferData.length;i++) {
    if (Math.abs(sample) < 0.3) {
     bufferData[i] = 1.3*sample;
    } else {
-    bufferData[i] = 1*3*0.3*Math.sign(sample);
+    bufferData[i] = 1.3*0.3*Math.sign(sample);
    }
 
 }
