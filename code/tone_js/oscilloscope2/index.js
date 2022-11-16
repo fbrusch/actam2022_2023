@@ -1,12 +1,9 @@
 /**  @type {HTMLCanvasElement} */
 const canvas = document.getElementById("canvas");
-
 const canvas_context = canvas.getContext("2d");
 
 
-
 let waveform = new Tone.Waveform();
-
 let mic = new Tone.UserMedia();
 
 
