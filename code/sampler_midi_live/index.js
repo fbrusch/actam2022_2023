@@ -54,7 +54,7 @@ function render() {
     // draw selection clip frame
     selCanvasStartIndex = Math.floor(selStart*canvas.width/recordData.length);
     selCanvasEndIndex = Math.floor(selEnd*canvas.width/recordData.length);
-    cc.rect(selCanvasStartIndex,0,selCanvasEndIndex,canvas.height);
+    cc.rect(selCanvasStartIndex,0,selCanvasEndIndex-selCanvasStartIndex,canvas.height);
 
     cc.stroke();
 
@@ -69,15 +69,49 @@ async function main() {
     const stream = await navigator.mediaDevices.getUserMedia({audio:true});
     const mss = c.createMediaStreamSource(stream);
     mss.connect(recorderNode);
+    // connect midi
+    const midi = await navigator.requestMIDIAccess();
+    const midiInput = [...midi.inputs][0][1];
+    midiInput.onmidimessage = function(e) {
+        console.log("midi message arrived")
+        if(e.data[1] == 14) {
+            selStart = Math.floor(e.data[2]/127*recordBuffer.length);
+        } else if(e.data[1] == 15) {
+            selEnd = Math.floor(e.data[2]/127*recordBuffer.length);
+        } else if(e.data[0] == 144) {
+            note = e.data[1]-50;
+            play(Math.pow(2,note/12));
+        }
+    }
 }
 
 document.getElementById("stop").onclick = function() {
     recording = !recording;
+
+
+
+
+
+
 }
 
-function play() {
+function play(rate) {
+    // create a new buffer and copy the clip over
     const bs = c.createBufferSource();
-    bs.buffer = recordBuffer;
+     
+    const clipBuffer = c.createBuffer(1, selEnd-selStart,
+        c.sampleRate);
+    
+    const clipData = clipBuffer.getChannelData(0);
+    const recordData = recordBuffer.getChannelData(0);
+
+    for(let i=0;i<clipData.length;i++) {
+        clipData[i] = recordData[i+selStart];
+    }
+
+    bs.buffer = clipBuffer;
+    bs.playbackRate.value = rate;
+
     bs.connect(c.destination);
     bs.start();
 }
