@@ -13,7 +13,7 @@ Tone.Master.volume.value = -9; //in decibels
 let waveform = new Tone.Waveform();
 tone_oscillator.connect(waveform);
 
-let oscillatorTypes = ["sine","square","triangle","sawtooth"];
+let oscillatorTypes = ["sine","square","triangle","sawtooth"]; //there might also be other types! check the documentation. fattriangle?
 
 let bufferArray;
 
