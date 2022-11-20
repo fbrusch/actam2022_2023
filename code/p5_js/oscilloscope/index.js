@@ -8,27 +8,26 @@ tone_oscillator.connect(waveform);
 let oscillatorTypes = ["sine","square","triangle","sawtooth"];
 let bufferArray;
 
-let canvas;
 
 function setup(){
-    canvas = createCanvas(500,200);
-    canvas.style('border', '1px solid blue');
+    createCanvas(windowWidth, windowHeight);
     console.log('setup');
 }
 
-function draw() {
+function windowResized() {
+    resizeCanvas(windowWidth, windowHeight);
+}
 
+function draw() {
+    background(110);
+    stroke('black');
+    strokeWeight(4);
     bufferArray = waveform.getValue(0);
 
-    drawingContext.clearRect(0,0,canvas.width, canvas.height);
-    drawingContext.beginPath();
-    drawingContext.moveTo(0,0);
-
     for(let i = 0; i < bufferArray.length; i++) {
-
-        drawingContext.lineTo(i, bufferArray[i]*canvas.height/2 + canvas.height/2);
+        point(i, bufferArray[i]*windowHeight/2 + windowHeight/2);
     }
-    drawingContext.stroke()
+
 }
 
 function startSound(){
@@ -38,7 +37,6 @@ function startSound(){
 
 document.onclick = () => {
     startSound();
-    draw();
 }
 
 /**
