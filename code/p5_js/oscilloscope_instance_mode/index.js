@@ -13,6 +13,7 @@ let bufferArray;
 let canvas;
 let start_btn_image;
 let myp5;
+let noise = new Tone.Noise("white").toDestination();
 
 
 p5_instance = function(p5c){
@@ -21,7 +22,7 @@ p5_instance = function(p5c){
     let y = 100;
 
     p5c.preload = function() {
-        start_btn_image = p5c.loadImage('start_button.jpg');
+        // start_btn_image = p5c.loadImage('start_button.jpg');
     }
 
     p5c.windowResized = function() {
@@ -38,8 +39,26 @@ p5_instance = function(p5c){
         p5c.strokeWeight(4);
         bufferArray = waveform.getValue(0);
 
+        let start_point = 0;
+
         for(let i = 0; i < bufferArray.length; i++) {
-            p5c.point(i, bufferArray[i]*p5c.windowHeight/2 + p5c.windowHeight/2);
+            if (bufferArray[i - 1] < 0 && bufferArray[i] >= 0){
+                start_point = i;
+                break;
+            }
+        }
+
+        let end_point = start_point + bufferArray.length/2;
+
+        for(let i = start_point+1; i < end_point; i++) {
+
+            x1 = p5c.map(i-1,start_point,end_point, 0, p5c.windowWidth);
+            y1 = p5c.map(bufferArray[i-1], -1,1,0, p5c.windowHeight);
+
+            x2 = p5c.map(i,start_point,end_point, 0, p5c.windowWidth);
+            y2 = p5c.map(bufferArray[i], -1,1,0, p5c.windowHeight);
+
+            p5c.line(x1,y1, x2,y2);
         }
 
 
@@ -90,16 +109,22 @@ document.onkeydown = function(e) {
     }
 }
 
-function playNoise() {
-    const bs = audioContext.createBufferSource();
-    const buffer = audioContext.createBuffer(1, audioContext.sampleRate, audioContext.sampleRate);
-    bufferData = buffer.getChannelData(0);
-    for(let i=0; i< bufferData.length; i++) {
-        bufferData[i] = Math.random();
+document.onkeyup = function(e){
+    if (e.key === "n") {
+        stopNoise();
     }
-    bs.buffer = buffer;
-    bs.connect(analyzer);
-    bs.start();
 }
 
 
+function playNoise() {
+    tone_oscillator.stop();
+    noise.start();
+    noise.connect(waveform);
+}
+
+function stopNoise() {
+    noise.stop();
+    tone_oscillator.start();
+    tone_oscillator.connect(waveform);
+
+}
