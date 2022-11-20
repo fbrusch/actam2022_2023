@@ -2,7 +2,7 @@
 Tone.Master.volume.value = -9;
 let main_bpm = 180;
 let main_loop_interval = "1m";
-let scaleNotes = Tonal.Scale.get("B4 minor").notes;
+let scaleNotes = Tonal.Scale.get("B4 phrygian").notes;
 
 
 /*----------HELPER FUNCTIONS-------------*/

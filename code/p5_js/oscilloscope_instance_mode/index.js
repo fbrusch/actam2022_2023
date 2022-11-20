@@ -1,44 +1,65 @@
-const tone_oscillator = new Tone.Oscillator();
-tone_oscillator.toDestination();
+Tone = require("Tone");
+
 Tone.Destination.volume.value = -9; //in decibels
 
-let waveform = new Tone.Waveform();
+const tone_oscillator = new Tone.Oscillator();
+tone_oscillator.toDestination();
+
+const waveform = new Tone.Waveform();
 tone_oscillator.connect(waveform);
 
 let oscillatorTypes = ["sine","square","triangle","sawtooth"];
 let bufferArray;
-
 let canvas;
+let start_btn_image;
+let myp5;
 
-function setup(){
-    canvas = createCanvas(500,200);
-    canvas.style('border', '1px solid blue');
-    console.log('setup');
-}
 
-function draw() {
+p5_instance = function(p5c){
 
-    bufferArray = waveform.getValue(0);
+    let x = 100;
+    let y = 100;
 
-    drawingContext.clearRect(0,0,canvas.width, canvas.height);
-    drawingContext.beginPath();
-    drawingContext.moveTo(0,0);
-
-    for(let i = 0; i < bufferArray.length; i++) {
-
-        drawingContext.lineTo(i, bufferArray[i]*canvas.height/2 + canvas.height/2);
+    p5c.preload = function() {
+        start_btn_image = p5c.loadImage('start_button.jpg');
     }
-    drawingContext.stroke()
+
+    p5c.windowResized = function() {
+        p5c.resizeCanvas(p5c.windowWidth, p5c.windowHeight);
+    }
+    p5c.setup = function() {
+        p5c.createCanvas(p5c.windowWidth,p5c.windowHeight);
+        console.log('setup');
+    };
+
+    p5c.draw = function() {
+        p5c.background(110);
+        p5c.stroke('black');
+        p5c.strokeWeight(4);
+        bufferArray = waveform.getValue(0);
+
+        for(let i = 0; i < bufferArray.length; i++) {
+            p5c.point(i, bufferArray[i]*p5c.windowHeight/2 + p5c.windowHeight/2);
+        }
+
+
+    };
 }
+
+
+
+myp5 = new p5(p5_instance);
+
+
 
 function startSound(){
-    Tone.start();
-    tone_oscillator.start();
+    Tone.start().then(r => {
+        tone_oscillator.start();
+    });
 }
 
 document.onclick = () => {
     startSound();
-    draw();
 }
 
 /**
