@@ -6,16 +6,21 @@ var canvas_context = canvas.getContext("2d");
 
 
 const tone_oscillator = new Tone.Oscillator();
-tone_oscillator.toDestination();
 
-Tone.Master.volume.value = -9; //in decibels
+
+tone_oscillator.connect(Tone.Destination);
+
+Tone.Destination.volume.value = -9; //in decibels
 
 let waveform = new Tone.Waveform();
+
 tone_oscillator.connect(waveform);
 
 let oscillatorTypes = ["sine","square","triangle","sawtooth"]; //there might also be other types! check the documentation. fattriangle?
 
 let bufferArray;
+
+let noise = new Tone.Noise("white").toDestination();
 
 function draw() {
 
@@ -71,16 +76,23 @@ document.onkeydown = function(e) {
     }
 }
 
-function playNoise() {
-    const bs = audioContext.createBufferSource();
-    const buffer = audioContext.createBuffer(1, audioContext.sampleRate, audioContext.sampleRate);
-    bufferData = buffer.getChannelData(0);
-    for(let i=0; i< bufferData.length; i++) {
-        bufferData[i] = Math.random();
+document.onkeyup = function(e){
+    if (e.key === "n") {
+        stopNoise();
     }
-    bs.buffer = buffer;
-    bs.connect(analyzer);
-    bs.start();
+}
+
+function playNoise() {
+    tone_oscillator.stop();
+    noise.start();
+    noise.connect(waveform);
+}
+
+function stopNoise() {
+    noise.stop();
+    tone_oscillator.start();
+    tone_oscillator.connect(waveform);
+
 }
 
 

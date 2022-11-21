@@ -1,8 +1,8 @@
 /*----------GLOBAL ------------*/
-Tone.Master.volume.value = -9;
-let main_bpm = 180;
+Tone.Destination.volume.value = -9; // this value is in dB
+let main_bpm = 120;
 let main_loop_interval = "1m";
-let scaleNotes = Tonal.Scale.get("B4 phrygian").notes;
+let scaleNotes = Tonal.Scale.get("C4 major").notes;
 
 
 /*----------HELPER FUNCTIONS-------------*/
@@ -45,27 +45,37 @@ chord_generator = function* () {
 }
 setupChords();
 const main_chord_generator = chord_generator();
-changeChord = function(transport_time) {
-    poly.triggerAttackRelease(main_chord_generator.next().value, main_loop_interval, transport_time);
-}
+
 main_loop_callback = function(transportTime){
-    changeChord(transportTime);
+    poly.triggerAttackRelease(main_chord_generator.next().value, main_loop_interval, transportTime);
 }
+
 let main_loop = new Tone.Loop(main_loop_callback, main_loop_interval);
+
+
+/* Implicit functions:
+* let main_loop = new Tone.Loop(transportTime => {
+    changeChord(transportTime);
+}, main_loop_interval);
+* */
+
 
 /*----------MELODY 1-------------*/
 let melody_1 = new Tone.Synth();
 melody_1.toDestination();
 let melody1_note_interval = '8n';
 let melody1_motif = 'x-xx-x--'
-let melody1_notes = '3-33-541'
+let melody1_notes = '4-44-546'
+
 melody1_metro_generator = function* (){
     let dummy_counter = 0;
     while (true) {
         yield dummy_counter++ % parseInt(melody1_note_interval[0]);
     }
 }
+
 const main_melody_generator = melody1_metro_generator();
+
 melody_loop_callback = function(transportTime){
     let inner_tempo = main_melody_generator.next().value
     console.log(inner_tempo);
@@ -73,6 +83,7 @@ melody_loop_callback = function(transportTime){
     let curr_melody_note = scaleNotes[curr_melody_note_index];
     melody_1.triggerAttackRelease(curr_melody_note,melody1_note_interval);
 }
+
 let melody_loop = new Tone.Loop(melody_loop_callback, melody1_note_interval);
 
 
@@ -86,17 +97,10 @@ let perc1_notes = '7-15'
 
 
 
-
-
-
-
-
-
-
-setupTone = async function () {
-    await Tone.start();
+setupTone = function () {
+    Tone.start();
     Tone.Transport.bpm.value = main_bpm;
-    await Tone.Transport.start();
+    Tone.Transport.start();
     console.log("Tone started :)");
     main_loop.start();
     melody_loop.start("+"+numOfChords+"m");

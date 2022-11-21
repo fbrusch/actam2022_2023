@@ -7,11 +7,12 @@ let waveform = new Tone.Waveform();
 let mic = new Tone.UserMedia();
 
 
-document.onclick = () => 
-
+document.onclick = () =>
 {
 
     Tone.start();
+
+
     mic.open().then(() => {
         // promise resolves when input is available
         console.log("mic open");
