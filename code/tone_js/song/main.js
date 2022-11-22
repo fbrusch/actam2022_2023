@@ -1,9 +1,12 @@
-// import * as Tone from 'tone';
-// import * as Tonal from 'tonal';
+//We are going to use parcel js to use the ES6 syntax
+import * as Tone from 'tone';
+import * as Tonal from 'tonal';
 
+/*
 //if you prefer to debug, you may want to use browserify instead
 Tone = require('tone');
 Tonal = require('tonal');
+*/
 
 /*----------GLOBAL ------------*/
 Tone.Destination.volume.value = -9; // this value is in dB
