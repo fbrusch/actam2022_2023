@@ -61,7 +61,6 @@ p5_instance = function(p5c){
             p5c.line(x1,y1, x2,y2);
         }
 
-
     };
 }
 

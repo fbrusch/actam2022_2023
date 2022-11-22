@@ -1,0 +1,8 @@
+{
+  "name": "p5_js",
+  "version": "1.0.0",
+  "dependencies": {
+    "tonal": "^4.6.10",
+    "tone": "^14.7.77"
+  }
+}
