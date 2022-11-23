@@ -1,0 +1,7 @@
+{
+  "name": "oscilloscope_instance_mode",
+  "version": "1.0.0",
+  "dependencies": {
+    "tone": "^14.7.77"
+  }
+}
